@@ -1,0 +1,27 @@
+pipeline {
+
+    agent any
+
+    triggers {
+        upstream(upstreamProjects: 'vapor-ware/buildpack-deps/master', threshold: hudson.model.Result.SUCCESS)
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh "docker build -t vaporio/wordpress:${job} ."
+            }
+        }
+
+        stage('Publish') {
+            when {
+                branch 'master'
+            }
+            steps {
+                withDockerRegistry(registry: [credentialsId: 'vio-docker-hub']) {
+                    sh "docker push vaporio/wordpress:${job}"
+                }
+            }
+        }
+    }
+}
