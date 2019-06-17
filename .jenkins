@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "docker build -t vaporio/wordpress:${job} ."
+                sh "docker build -t vaporio/wordpress:latest ."
             }
         }
 
@@ -19,7 +19,7 @@ pipeline {
             }
             steps {
                 withDockerRegistry(registry: [credentialsId: 'vio-docker-hub']) {
-                    sh "docker push vaporio/wordpress:${job}"
+                    sh "docker push vaporio/wordpress:latest"
                 }
             }
         }
